@@ -1,0 +1,120 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+        <title>Google Maps API v3: Busca de endereço e Autocomplete - Demo</title>
+
+        <link href="http://fonts.googleapis.com/css?family=Open+Sans:600" type="text/css" rel="stylesheet" />
+        <link href="estilo.css" type="text/css" rel="stylesheet" />
+
+        <script type="text/javascript" src="http://maps.googleapis.com/maps/api/js?sensor=false"></script>
+        <script type="text/javascript" src="Scripts/jquery.min.js"></script>
+        <script type="text/javascript" src="Scripts/mapa.js"></script>
+        <script type="text/javascript" src="Scripts/jquery-ui.custom.min.js"></script>
+
+    </head>
+    
+    <body>
+
+        <div id="apresentacao">
+
+            <h1>Google Maps API v3: Busca de endereço e Autocomplete - Demo</h1>
+    
+            <form method="post" action="index.html">    
+                <fieldset>
+
+                    <legend>Google Maps API v3: Busca de endereço e Autocomplete - Demo</legend>    
+            
+                    <div class="campos">
+                        <label for="txtEndereco">Endereço:</label>
+                        <input type="text" id="txtEndereco" name="txtEndereco" />
+                        <input type="button" id="btnEndereco" name="btnEndereco" value="Mostrar no mapa" />
+                    </div>
+
+                    <div id="mapa"></div>
+                    
+                	<input type="submit" value="Enviar" name="btnEnviar" />
+                    
+                    <input type="hidden" id="txtLatitude" name="txtLatitude" />
+                    <input type="hidden" id="txtLongitude" name="txtLongitude" />
+
+                </fieldset>
+            </form>
+
+            <div class="autores">
+                <p>Criado por: <a href="http://twitter.com/rodolfoprr" target="_blank">Rodolfo Pereira</a> | Estilizado por: <a href="http://twitter.com/jofelipe_" target="_blank">Jonathan Felipe</a></p>
+            </div>
+
+        </div>
+    
+    </body>
+</html>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+    <head>
+         
+     
+
+<link href="estilo.css" type="text/css" rel="stylesheet" />
+        <script type="text/javascript" src="http://maps.googleapis.com/maps/api/js?sensor=true"></script>
+        <script type="text/javascript" src="/Scripts/jquery.min.js"></script>
+        
+        <script type="text/javascript" src="/Scripts/mapa.js"></script>
+        <script type="text/javascript" src="/Scripts/jquery-ui.custom.min.js"></script>
+ <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <div class="container"><? if(isset( $_SESSION['id_facebook'])){ ?>
+          <h5>Ao logar na Proxima Vez Basta Apenas Estar logado em sua conta Facebook</h5>
+          <p>   Nenhuma Informação Privada do seu Facebook será acesada</p> </div>
+		  
+		
+    <!-- Brand and toggle get grouped for better mobile display -->
+    
+          <h5><img src="https://graph.facebook.com/<?php echo $_SESSION['id_facebook']; ?>/picture"><?php echo $_SESSION['first_name_facebook'];?>  <?php echo $_SESSION['last_name_facebook'];?></h5>
+		  <h5>Email:<?php echo $_SESSION['email_facebook'];?> </h5>
+          </div> <? } ?>
+    </head> 
+    </div><div class="container">
+    
+    
+    
+    <div class="col-md-12">
+    
+ 
+    <div class="col-md-6">
+      <div class="jumbotron ">
+        <h3  class="text-center">Seja bem vindo ao Carrobomebarato
+        
+         Tenha uma loja completa na intenet grátis e  ilimitado</h3>
+        <p class="btn btn-primary btn-lg" role="button">www.carrobomebarato.com/seunome</p><h3 class="text-center">digite no campo abaixo seu endereço assim seus clientes poderão usar gps para traçar rotas até sua loja</h3>
+        </div>   </div> <div class="desktop">  <div class="col-md-6"> 
+        <img src="/img/logogrande.jpg" alt="" width="660" height="236" longdesc="carrobomebarato" />
+        
+             </div>    </div>                   </div>
+          <div class="col-md-8">   <form method="post"  action="mapa_cadastro.html">  <fieldset>
+                       
+                        <input  type="text" id="txtEndereco" name="txtEndereco"  placeholder="Digite Aqui Seu Endereço " >
+						</div><div class="col-md-3">
+                       <input type="submit" id="btnEndereco" name="btnEndereco" value="Enviar" />
+                  </div></div>
+                  
+                 
+
+                    <div id="mapa"></div>
+                    
+                	
+                    
+                    <input type="hidden" id="txtLatitude" name="txtLatitude" />
+                    <input type="hidden" id="txtLongitude" name="txtLongitude" />
+					   <input type="hidden" id="cidade" name="cidade" />
+                    <input type="hidden" id="rua" name="rua" />
+					   <input type="hidden" id="estado" name="estado" />
+                    <input type="hidden" id="cep" name="cep" />
+					 
+                </fieldset>
+            </form>
+
+          
+        </div>
+    
+    </body>
+</html>

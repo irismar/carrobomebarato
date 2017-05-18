@@ -1,0 +1,33 @@
+RewriteEngine On
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-l
+RewriteRule . index.php [L]
+RewriteRule ^([^/]+)/$ $1
+<FilesMatch ".(htm|html|css|js)$">
+AddDefaultCharset UTF-8
+</FilesMatch>
+ErrorDocument 400 /erros/badrequest.html
+ErrorDocument 401 /erros/authreqd.html
+ErrorDocument 403 /erros/forbid.html
+ErrorDocument 500 /erros/serverr.html
+
+
+
+<files ~ "^.*\.([Hh][Tt][Aa])">
+order allow,deny
+deny from all
+satisfy all
+</files>
+
+Options -Indexes
+<ifmodule mod_gzip.c="">
+mod_gzip_on       Yes
+mod_gzip_dechunk  Yes
+mod_gzip_item_include file      \.(html?|css|js|php|pl)$
+mod_gzip_item_include handler   ^cgi-script$
+mod_gzip_item_include mime      ^text/.*
+mod_gzip_item_include mime      ^application/x-javascript.*
+mod_gzip_item_exclude mime      ^image/.*
+mod_gzip_item_exclude rspheader ^Content-Encoding:.*gzip.*
+</ifmodule>
