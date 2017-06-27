@@ -1,4 +1,4 @@
- <style>
+<? include_once('Connections/repasses.php'); ?> <style>
 
 #blog-landing {
 position: relative;
@@ -28,7 +28,7 @@ margin: 5px;
 	exit();
 }
   //require_once('memsagem.php');
-    require_once('meta.php');
+   
   if (isset( $_GET['deletar'])){ 
 
  $delet= alphaID($_GET['deletar']);
@@ -54,17 +54,17 @@ margin: 5px;
  $sql = "SELECT * FROM vendido WHERE id_membro ='". $_SESSION['id']. "'   "; 
  
     $queryvendido = $mysql->query($sql);
-	echo  @$totalRows_vendidos=$queryvendido->num_rows; 
+	$totalRows_vendidos=$queryvendido->num_rows; 
 	
 ?>
 <!DOCTYPE html>
 <html>
 <head>
-<? include("meta.php"); ?>
+<?  include("meta.php"); ?>
 
 
-<script src="Scripts/funcoes.js" type="text/javascript"></script>
-<script src="Scripts/ajax.js" type="text/javascript"></script>
+<script src="Scripts/funcoes.js" type="text/javascript" async></script>
+<script src="Scripts/ajax.js" type="text/javascript" async></script>
 <script>
 function Mensagem(msg) {
 	
@@ -129,7 +129,8 @@ function exibe(id) {
 	   ////////////fim do n////////////////////////////////////////////////////
 	   ////////////fim do n////////////////////////////////////////////////////
 	   ////////////fim do n/////consultar se fez venda///////////////////////////////////////////////
-	    ?><section id="gerente"> <div class="container">   <? if( (Url::getURL(1)) && (Url::getURL(1)=="vendidos") ){ ?>     
+	    ?><section id="gerente"> <div class="container"> 
+          <? if( (Url::getURL(1)) && (Url::getURL(1)=="vendidos") ){ ?>     
 <? $sql2 = "SELECT  * FROM vendido 	WHERE  id_membro='". $_SESSION['id']."' ORDER BY id DESC";
   $query2 = $mysql->query($sql2);
    $ok_paguser=$query2->num_rows;
@@ -140,7 +141,7 @@ function exibe(id) {
   
   
   
-  <p><?="&nbsp;  ";?></p>
+  <p><?="&nbsp;";?></p>
 
   
  <div class="col-md-12">
@@ -176,9 +177,9 @@ function exibe(id) {
   if ($query24->num_rows != 0) { 
     while($acesso_vendido = $query24->fetch_assoc()) {  ?>
       
-      
+     
        <? echo @$acesso_vendido['endereco'].'&nbsp;'.@$acesso_vendido['cidade'].'&nbsp;'.@$acesso_vendido['estado'];?>
-       <? echo @FormataData3($acesso_vendido['data']); ?><br>
+       <? echo data22($acesso_vendido['data']); ?><br>
    <? }} } ?>
   
    </div> </div>
@@ -213,21 +214,21 @@ function exibe(id) {
 <p><?="&nbsp;  ";?></p>
 <p><?="&nbsp;  ";?></p>
       
-    <div class="col-md-3">
+    <div class="col-md-1">
     <? if(empty($query_propostas['foto'] )){ ?>
       <img src="/galeriadefotos/peq/avatar.jpg" class="caixa_estoque80">
     <? }else { ?>
     <img src="/galeriadefotos/peq/<? echo $query_propostas['foto'] ?>"class="caixa_estoque80">
 	<? } ?>
 	</div>
-    <div id="ver_descricao_foto2">
-    <a href="#"><strong class="vermelho_11px_upper"><? echo  $query_propostas['remetene']; ?></strong></a> 
-	<a href="#"><strong class="cinza_11px"><? echo utf8_encode( $query_propostas['mensagem']); ?></strong></a>
+     <div class="col-md-11">
+    <a><strong class="fa fa-user fa-2x"></strong><? echo  $query_propostas['remetene']; ?></strong></a> 
+   <a href="#"><strong class="fa-2x"><? echo utf8_encode( $query_propostas['mensagem']); ?></strong></a>
 	
-   &nbsp;<p><a href=""  >&nbsp;<? echo 	$query_propostas['data']; ?></a> 
-	<a href="" > <? echo @$query_propostas['endereco'];; ?></a>
+        &nbsp;<p><a href=""  ><samp class=" glyphicon glyphicon-list-alt fa-1x "></samp><? echo data22(	$query_propostas['data']); ?></a> 
+	<a href="" ><samp class=" glyphicon glyphicon-map-marker fa-1x "></samp> <? echo @$query_propostas['endereco'];; ?></a>
       <a href="acao.php?deletar=<?php echo alphaID($query_propostas['id'], true ); ?>"><strong class="vermelho_11px_upper">Deletar</strong></a> </p> 
-	
+        <hr class="col-md-12">
   </div></div>
                                                   
     <? } ////listar fim  ?><?  
@@ -259,7 +260,7 @@ function exibe(id) {
     <? while ($query_vicitas =$queryacessos->fetch_assoc()) { 
 	   ?>
      <div id="caixa_estoque1"> 
-    <div id="ver_descricao_foto22">
+    <div class="col-md-1">
 	 <? if (@$query_vicitas['foto_carro']) { ?>
                           	  <img src="/galeriadefotos/peq/<?php echo $query_vicitas['foto_carro'] ;?>"  class="caixa_estoque80"  width="50" height="60"> 
                               <? } else{ ?>
@@ -267,13 +268,14 @@ function exibe(id) {
                               <?   } ?> 
 	</div>
     <div id="ver_descricao_foto2">
-	<h1> <a href="#"><strong class="cinza_11px"><? echo  $query_vicitas['marca'].'&nbsp;'.$query_vicitas['modelo']; ?></strong></a></h1>
+	<h1> <a href="#"><strong class="vermelho_11px"><? echo  $query_vicitas['marca'].'&nbsp;'.$query_vicitas['modelo']; ?></strong></a></h1>
     <h2>  <a href="">&nbsp;<? echo "R$". '&nbsp;'. @number_format(trim($query_vicitas['preco']), 2, ',', '.'); ?></a>
-     <a href="">&nbsp; <? echo $query_vicitas['endereco'];?></a>
+    
+        <a href=""><samp class="fa fa-info fa-2x "></samp> &nbsp; <? echo $query_vicitas['endereco'];?></a>
    <a href="">&nbsp;&nbsp;<? echo calculardias($query_vicitas['data']); ?> </a> </h2> 
      
-    
-    </div></div>
+      
+    </div></div><br>
     
     <?  }
 	$mysql->query=( "UPDATE membros SET alvit=0  WHERE id = ". $_SESSION['id']."");
@@ -342,20 +344,22 @@ $sql = "SELECT * FROM propostas WHERE resposta = '" . $query_cont['id']. "'	 AND
     </div> <? }} } ?>
     </div></div> </div></div>
 </div>
-</div> <div id="caixa_estoque87">
- <?
-   if (isset( $_GET['relatorio'])){ 
-echo $sql = "SELECT * FROM  logs  ORDER BY id DESC  ";
+            </div><div class="container">
+<div id="caixa_estoque">
+ <? 
+    if( (Url::getURL(1)) && (Url::getURL(1)=="log") ){
+ $sql = "SELECT * FROM  log  where id_usuario='".$_SESSION['id']."' ORDER BY id DESC  ";
  $query2 = $mysql->query($sql);
- echo  $query2->num_rows;
+   $query2->num_rows;
  if ($query2->num_rows != 0) { ?>
-          <div id="caixa_estoque11"> 
+          
 	 <?   while ($row_estoque3 =$query2->fetch_assoc()) {   ?>
-            
-                 <p><a href="/<? echo $row_estoque3['hora']?>"><?  echo FormataData3($row_estoque3['hora']); ?></a>
-                   <a href="/<? echo $row_estoque3['id']?>"> <?  echo $row_estoque3['mensagem']; ?> </a> </p>
-                 
-       <?   }  }  ?></div>
+    <div class="alert alert-warning back-widget-set text-left">
+        <p> <a >  <?  echo data22($row_estoque3['data'],24); ?>
+                    <?  echo $row_estoque3['mensagem']; ?>   <?  echo $row_estoque3['endereco']; ?> <?  echo $row_estoque3['maquina']; ?><?  echo $row_estoque3['nome']; ?>  <?  echo $row_estoque3['ip']; ?> </a></p>
+                 </div>
+       <?   }  }  ?>
 </div> 
     <?  } ?></div></div></section>
 
+<? include'rodape.php';?>

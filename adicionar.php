@@ -75,11 +75,11 @@ if ((isset($_POST["MM_insert"])) && ($_POST["MM_insert"] == "add")) {
 	 $km=$_POST['km']; 
     $preco= $_POST['preco'];
     $fipe= $_POST['fipe'];	 
-
+   echo $url_foto=trim($_POST['url_foto']);
 
  $url_user=tirarAcentos1($_POST['url']);	
 
-  $sql= "INSERT INTO estoque (contato,taxa,entrada,premium,endereco,id_membro,foto_membro,nome_membro, data, data_cadastro, categoria,marcatexto,modelotexto,  ano, ano2, cor, preco, condicoes, km, cidade,estado, portas, combustivel, transmissao, descricao, id_plano,lat,lon ,watapps,oi,vivo,claro,tim,fixo,email,video,idfacebook,url,fipe)
+ $sql= "INSERT INTO estoque (contato,taxa,entrada,premium,endereco,id_membro,foto_membro,nome_membro, data, data_cadastro, categoria,marcatexto,modelotexto,  ano, ano2, cor, preco, condicoes, km, cidade,estado, portas, combustivel, transmissao, descricao, id_plano,lat,lon ,watapps,oi,vivo,claro,tim,fixo,email,video,idfacebook,url,fipe,url_foto)
   VALUES ('". $telefone."', '".$_POST['taxa']."','".$_POST['entrada']."','".$_SESSION['premium']."','".$endereco."',
 					   '".$id."',
 					   '".$fotow."',
@@ -114,7 +114,7 @@ if ((isset($_POST["MM_insert"])) && ($_POST["MM_insert"] == "add")) {
 					   '".$email."',
 					     '".trim($_POST['video'])."',
 						 '".trim($_SESSION['id_facebook'])."',
-						   '".$url_user."', '".$fipe."')"; 
+						   '".$url_user."', '".$fipe."', '".$url_foto."' )"; 
    $sql= $mysql->query($sql); 		
 	
   $sql2 = "SELECT nome_membro,Id_estoque,url,carros  FROM estoque WHERE  nome_membro ='". $_SESSION["usuario"]."' ORDER BY Id_estoque DESC";
@@ -150,7 +150,56 @@ if ((isset($_POST["MM_insert"])) && ($_POST["MM_insert"] == "add")) {
 			
 		}
 	}
+    if(!empty($_POST['url_foto'])){
+       $url_foto=trim($_POST['url_foto']);
+	$numero =md5(microtime()); 
+		$imagem =$numero. ".jpg";
+       if( !@copy( $url_foto, 'galeriadefotos/grd/'.$imagem ) ) {
+    $errors= error_get_last();
+     "COPY ERROR: ".$errors['type'];
+     "<br />\n".$errors['message'];
+} else {
+    $sql = "INSERT INTO fotos (id_estoque,imagem) VALUES ('".$id_estoque."','".$imagem."')";
+		 $sql= $mysql->query($sql); 
+         $sql = "INSERT INTO poi_example (id_estoque,name,endereco,lat,lon,carromodelo,preco,foto)
+		VALUES ('".$id_estoque."','".$nome_usuario."','".$endereco."','".$lat."','".$lon."','".$_POST['modelo']."','".$preco."','".$image."')";
+		$sql= $mysql->query($sql); 
+	
+		 $adimagem=$mysql->query ("UPDATE estoque SET foto_carro='".$imagem."' WHERE Id_estoque='".$id_estoque."'");
+        
+		  $mensagem =$nome_usuario. "Adicionou " .'&nbsp;' .$imagem.'&nbsp;'."para carro" .$id_estoque.'&nbsp;'. "com sucesso" ;
+		if (salvaLog($mensagem)) {
 
+	echo "O LOG foi salvo com sucesso!";
+
+	} else {
+
+	echo "NAo foi possivel salvar o LOG!";
+
+	}	
+}
+         $image = WideImage::load('galeriadefotos/grd/'.$numero.'.jpg');
+         // Redimensiona a imagem
+         $image = $image->resize(404, 304, 'inside');
+         // Salva a imagem em um arquivo (novo ou não)
+         $image->saveToFile('galeriadefotos/capa/'.$numero.'.jpg');
+	 $image = $image->resize(100, 100, 'inside');
+         // Salva a imagem em um arquivo (novo ou não)
+         $image->saveToFile('galeriadefotos/novo/'.$numero.'.jpg');
+         
+         $image = $image->resize(100, 100, 'inside');
+         // Salva a imagem em um arquivo (novo ou não)
+         $image->saveToFile('galeriadefotos/thumbnails/'.$numero.'.jpg');
+         $image = $image->resize(100, 100, 'inside');
+         // Salva a imagem em um arquivo (novo ou não)
+         $image->saveToFile('galeriadefotos/peq/'.$numero.'.jpg');
+         $image = $image->resize(60, 50, 'inside');
+         // Salva a imagem em um arquivo (novo ou não)
+         $image->saveToFile('galeriadefotos/mini/'.$numero.'.jpg');
+		
+		
+	
+	}
 	
 	if($_FILES['imagem']['size'] > 0)
 	{
@@ -168,7 +217,7 @@ if ((isset($_POST["MM_insert"])) && ($_POST["MM_insert"] == "add")) {
 		copy($sTmpFolder . "thumbnails/" . $numero . "_220x190.jpg", $sTmpFolder . "peq/" . $numero .".jpg");
 		@unlink($sTmpFolder . "thumbnails/" . $numero . "_220x190.jpg");
 		@unlink($sTmpFolder . $numero . ".jpg");
-		$image = WideImage::load('galeriadefotos/grd/'.$numero.'.jpg');
+	$image = WideImage::load('galeriadefotos/grd/'.$numero.'.jpg');
          // Redimensiona a imagem
          $image = $image->resize(404, 304, 'inside');
          // Salva a imagem em um arquivo (novo ou não)
@@ -188,19 +237,11 @@ if ((isset($_POST["MM_insert"])) && ($_POST["MM_insert"] == "add")) {
 		$adimagem=$mysql->query ("UPDATE estoque SET foto_carro='".$imagem."' WHERE Id_estoque='".$id_estoque."'");
         
 		 $mensagem =$nome_usuario. "Adicionou " .'&nbsp;' .$imagem.'&nbsp;'."para carro" .$id_estoque.'&nbsp;'. "com sucesso" ;
-		if (salvaLog($mensagem)) {
-
-	echo "O LOG foi salvo com sucesso!";
-
-	} else {
-
-	echo "NAo foi possivel salvar o LOG!";
-
-	}
+        salvaLog($mensagem);}
 	
 		
 		
-		}   
+
 	if($_FILES['imagem2']['size'] > 0)
 	{
 
@@ -466,72 +507,24 @@ location.href="<?="/".trim($row_estoque['Id_estoque'])?>"
  <meta name="viewport" content="width=device-width, initial-scale=1">
   <link href="css/estilo.css" rel="stylesheet" type="text/css">
 <? include("meta.php"); ?>
-<script type="text/javascript" src="js/jquery.js"></script>
-<script type="text/javascript" src="js/simpleAutoComplete.js"></script>
+<script type="text/javascript" src="js/jquery.js" async></script>
+<script type="text/javascript" src="js/simpleAutoComplete.js"  async></script>
 
-<script src="Scripts/funcoes.js" type="text/javascript"></script>
-<script src="Scripts/ajax.js" type="text/javascript"></script>
-<script type="text/javascript">
-	$(document).ready(function()
-	{
-	    $('#estado_autocomplete').simpleAutoComplete('ajax_query.php',{
-		autoCompleteClassName: 'autocomplete',
-		selectedClassName: 'sel',
-		attrCallBack: 'rel',
-		identifier: 'estado'
-	    },estadoCallback);
+<script src="Scripts/funcoes.js" type="text/javascript"  async></script>
 
-	    $('#cidade_autocomplete').simpleAutoComplete('ajax_query.php',{
-		autoCompleteClassName: 'autocomplete',
-		selectedClassName: 'sel',
-		identifier: 'cidade',
-		extraParamFromInput: '#id_estado'
-	    },cidadeCallback);
-		
-		  $('#ano_autocomplete').simpleAutoComplete('ajax_query.php',{
-		autoCompleteClassName: 'autocomplete',
-		selectedClassName: 'sel',
-		identifier: 'cidade',
-		extraParamFromInput: '#id_ano'
-	    },anoCallback);
-        });
-		
-	
-	
-	function estadoCallback( par )
-	{
-	    $("#id_estado").val( par[0] );
-	    $("#uf1").val( par[1] );
-	    $("#cidade_autocomplete").removeAttr("disabled");
-		$("#cidade_autocomplete, #uf2, #id_cidade").val("");
-	}
-	function anoCallback( par )
-	{
-	    $("#id_ano").val( par[0] );
-	    $("#uf1").val( par[1] );
-	    $("#ano_autocomplete").removeAttr("disabled");
-		$("#cidade_autocomplete, #uf2, #id_cidade").val("");
-	}
 
-	function cidadeCallback( par )
-	{
-	    $("#id_cidade").val( par[0] );
-	    $("#uf2").val( par[1] );
-	}
-	
-    </script>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8"></head>
 <div class="container">
 <? if(!isset($_GET['marca'])){ ?>
-  <form action="?" method="GET" enctype="multipart/form-data" name="add" id="add" onSubmit="return AdicionarCarros();">
-    <div id="caixa_cadastro"> 
+  <form action="?" method="GET" enctype="multipart/form-data" name="add" id="add" >
+      <div class="celular"></div><div id="caixa_cadastro"> 
       <h2>Digite aqui o nome do seu carro</h2>
-      <input type="text" id="estado_autocomplete" name="marca" autocomplete="off"  />
+      <input  id="estado_autocomplete" name="marca"  >
     </div>
     <input type="hidden" name="id_estado" id="id_estado" />
     <div id="caixa_cadastro"> 
       <h2>Escolha o Modelo:</h2>
-      <input type="text" id="cidade_autocomplete" name="modelo" autocomplete="off" disabled />
+      <input id="cidade_autocomplete" name="modelo" disabled >
        <input type="hidden" name="id_ano" id="id_ano" />
     
     </div>
@@ -545,11 +538,11 @@ location.href="<?="/".trim($row_estoque['Id_estoque'])?>"
    <? } else{ 
        
       $str=trim( $_GET['modelo']);
-      $arry=explode("Fipe",$str);
+      $arry=explode("Codigo Fipe",$str);
      
        ?><div class="container">
       <form action="adicionar.php" method="POST" enctype="multipart/form-data" name="add" id="add" onSubmit="return AdicionarCarros();">
-<? $sql = "SELECT * FROM veiculos  where id='".trim($arry['1'])."'  limit 1";
+<?   $sql = "SELECT * FROM fp_ano  where id_ano='".trim($arry['1'])."'  limit 1";
 	$r = $mysql->query($sql);
 	if ( $r )
 	{ ?>
@@ -561,6 +554,7 @@ location.href="<?="/".trim($row_estoque['Id_estoque'])?>"
    <li>   <a href="/adicionar">
    <?
   $marca = $l['marca'];$modelo=$l['modelo'];
+  $ano=$l['ano'] ;
     echo  $p = $l['marca']." ".$l['modelo']."  ";?></a></li> 
    <li>   <a href="#"><? echo 'ano fabricação:'." ".$l['ano'] ."  "?></a></li>
     <li>   <a href="#"><? echo 'Combustivel:'." ".$l['combustivel'] ."  "?></a></li>
@@ -599,8 +593,8 @@ if(	@$portas == false) {
     <?  } ?>
     
     
-    <li><img src="img/fipe.png" >   <a href="#"><? echo "  ". 'Valor de Referência Fipe:'." ".$l['valor'];?></a></li>
-   o preço de referência é obitido via API no site da fipe última atualização   <? echo  date('d/m/Y');?>
+    <li><img src="img/fipe.png" >   <a href="#"><? echo "  ". 'Valor de Referência Fipe:'." ".number_format($l['valor'],2,',','.');?></a></li>
+   o preço de referência é obitido via API  fipe última atualização   <? echo  date('d/m/Y');?>
    
  
        
@@ -672,10 +666,21 @@ echo @ $_POST['preco'];
       Ex. 80.000</span></div>
     <div id="caixa_cadastro"> 
       <h1>COMBUSTVEL*</h1>
-      <? if(strpos($l['modelo'],"Flex") !== false)
+      <? if(strpos($l['combustivel'],"Flex") !== false)
      { ?>
          <input name="combustivel" type="text" class="input" id="km" value="FLEX" size="10" maxlength="10"/>
-     <? }else{ ?>
+         
+     <? }elseif(strpos($l['combustivel'],"Gasolina") !== false)
+     { ?>
+         <input name="combustivel" type="text" class="input" id="km" value="Gasolina" size="10" maxlength="10"/>
+     
+     <? 
+      }elseif(strpos($l['combustivel'],"Diesel") !== false)
+     { ?>
+         <input name="combustivel" type="text" class="input" id="km" value="Diesel" size="10" maxlength="10"/>
+     
+     <? }
+     else{ ?>
       <label> 
       <select name="combustivel" id="combustivel" >
         <option>escolha uma opção</option>
@@ -706,6 +711,8 @@ echo @ $_POST['preco'];
       <span id="cb_telefone2"> 
       <input name="video" type="text"  class="input" id="video" placeholder=" algo como https://www.youtube.com/watch?v=YHRhpSD1UpI" value="<?php echo @$_POST['video']; ?>" size="99" maxlength="900" />
       </span></div>
+      
+      
     <div class="container">
 
 
@@ -715,7 +722,14 @@ echo @ $_POST['preco'];
       <label> insira uma foto de boa qualidade e com imagem bem clara do carro
       <input name="imagem" type="file" id="imagem" size="25" />
       </label>
-    </div> </div> </div> 
+    </div> </div>
+     <div id="caixa_cadastro"> 
+      <h1><img src="img/mstile-150x150.png" width="45" height="48">Cole Url da Foto *se você tem anuncio em outro lugar ex Facebook ,blo,site  
+      <span id="cb_telefone2"> 
+      <input name="url_foto" type="text"  class="input" id="url_foto" placeholder=" www.endereco.com/foto" value="<?php echo @$_POST['url_foto']; ?>" size="99" maxlength="900" />
+      </span></div>
+     
+       </div> 
     <div id="caixa_cadastro"> 
       <h1>FOTOS LATERAL *</h1>
       <label> 
@@ -762,8 +776,8 @@ echo @ $_POST['preco'];
       <div class="col-md-12">
 
     
-    <input name="acessorios_<?php echo $row_acessorios['id']; ?>" style="border:3px;" type="checkbox" id="acessorios_<?php echo $row_acessorios['id']; ?>" value="Sim" />
-    <?php echo  utf8_encode($row_acessorios['acessorios']); ?>
+    <input name="acessorios_<?php echo $row_acessorios['id']; ?>" style="border:3px;" type="checkbox" id="acessorios_<?php echo trim($row_acessorios['id']); ?>" value="Sim" />
+    <?php echo  trim($row_acessorios['acessorios']); ?>
     	 </div><? } ?>
     
 
@@ -783,7 +797,55 @@ echo @ $_POST['preco'];
 
 
 
+<script type="text/javascript">
+	$(document).ready(function()
+	{
+	    $('#estado_autocomplete').simpleAutoComplete('ajax_query.php',{
+		autoCompleteClassName: 'autocomplete',
+		selectedClassName: 'sel',
+		attrCallBack: 'rel',
+		identifier: 'estado'
+	    },estadoCallback);
 
+	    $('#cidade_autocomplete').simpleAutoComplete('ajax_query.php',{
+		autoCompleteClassName: 'autocomplete',
+		selectedClassName: 'sel',
+		identifier: 'cidade',
+		extraParamFromInput: '#id_estado'
+	    },cidadeCallback);
+		
+		  $('#ano_autocomplete').simpleAutoComplete('ajax_query.php',{
+		autoCompleteClassName: 'autocomplete',
+		selectedClassName: 'sel',
+		identifier: 'cidade',
+		extraParamFromInput: '#id_ano'
+	    },anoCallback);
+        });
+		
+	
+	
+	function estadoCallback( par )
+	{
+	    $("#id_estado").val( par[0] );
+	    $("#uf1").val( par[1] );
+	    $("#cidade_autocomplete").removeAttr("disabled");
+		$("#cidade_autocomplete, #uf2, #id_cidade").val("");
+	}
+	function anoCallback( par )
+	{
+	    $("#id_ano").val( par[0] );
+	    $("#uf1").val( par[1] );
+	    $("#ano_autocomplete").removeAttr("disabled");
+		$("#cidade_autocomplete, #uf2, #id_cidade").val("");
+	}
+
+	function cidadeCallback( par )
+	{
+	    $("#id_cidade").val( par[0] );
+	    $("#uf2").val( par[1] );
+	}
+	
+    </script>
 
 
 

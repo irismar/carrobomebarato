@@ -1,5 +1,4 @@
 <?php require_once('log.php');
-   
   $registros =60;
 if (isset($_GET['pagina'])) {
 	
@@ -14,7 +13,7 @@ $data = date('Y-m-d');
 
 	  $sql2 = "SELECT * FROM estoque where url='".$modulo."'
 
-ORDER BY Id_estoque ASC
+ORDER BY Id_estoque DESC
 ";
    	 
 
@@ -43,7 +42,7 @@ $inicio = ($fim - $registros);
 
 $sql3 = "SELECT * FROM estoque where url='".$modulo."'
 
-ORDER BY Id_estoque ASC
+ORDER BY Id_estoque DESC
 ";
 
 
@@ -66,7 +65,7 @@ while($row_estoque = $query3->fetch_assoc()) {
 			
 	
 <?php
-$data_inicial =FormataData($row_estoque['data_cadastro']);
+$data_inicial =FormataData($row_estoque['data']);
 $data_final = date('d.m.Y');
 // Cria uma fun??o que retorna o timestamp de uma data no formato DD/MM/AAAA
 // Usa a fun??o criada e pega o timestamp das duas datas:
@@ -77,8 +76,12 @@ $diferenca = $time_final - $time_inicial; // 19522800 segundos
 // Calcula a diferen?a de dias
 @$dias=(int)floor( $diferenca/(60 * 60 * 24)); // 225 dias
  @$dia=trim($dias);
-  
- include'main.php';
+      
+if(isset($_SESSION['horizontal'])&&($_SESSION['horizontal']="ok")){
+ include'main2.php';
+}else{
+    include'main.php';
+}
    ?>  </div>
 
 

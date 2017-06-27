@@ -237,7 +237,7 @@ $sql2 == "SELECT * FROM fotos WHERE id_estoque = '".$arquivo."'";
 <? if( @$row_estoque1['idfacebook'] <>''){ ?> 
    <a href=" /<?= $_SESSION['usuario']?>" > <img src="https://graph.facebook.com/<?php echo $_SESSION['id_facebook']; ?>/picture"></a> 
    <? }else{ ?> 
-   <img src="/galeriadefotos/grd/<? if (($row_estoque['foto_carro'] <> '') and ((file_exists("galeriadefotos/grd/".$row_estoque['foto_carro'])))) { echo $row_estoque['foto_carro']; } else { echo "avatar.jpeg"; } ?>" ></a> 
+   <img src="/galeriadefotos/capa/<? if (($row_estoque['foto_carro'] <> '') and ((file_exists("/galeriadefotos/capa/".$row_estoque['foto_carro'])))) { echo $row_estoque['foto_carro']; } else { echo "semimagem.png"; } ?>" ></a> 
 
    <? } ?>
 

@@ -1,57 +1,90 @@
-<?php
-    include("class.ipdetails.php");
-    $ip = $_SERVER['REMOTE_ADDR'];  
+<!DOCTYPE html>
+<html>
+    <head>
 
-$http_client_ip       = $_SERVER['HTTP_CLIENT_IP'];
-$http_x_forwarded_for = $_SERVER['HTTP_X_FORWARDED_FOR'];
-$remote_addr          = $_SERVER['REMOTE_ADDR'];
- 
-/* VERIFICO SE O IP REALMENTE EXISTE NA INTERNET */
-if(!empty($http_client_ip)){
-    $ip = $http_client_ip;
-    /* VERIFICO SE O ACESSO PARTIU DE UM SERVIDOR PROXY */
-} elseif(!empty($http_x_forwarded_for)){
-    $ip = $http_x_forwarded_for;
-} else {
-    /* CASO EU NÃO ENCONTRE NAS DUAS OUTRAS MANEIRAS, RECUPERO DA FORMA TRADICIONAL */
-    $ip = $remote_addr;
-}
- 
-echo $ip;
- 
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.3/jquery.min.js"></script>
+        
+        <title>Geolocation</title>
+        <meta name="viewport" content="initial-scale=1.0, user-scalable=no">
+        <meta charset="utf-8">
+        <style>
+        html, body {
+                height: 100%;
+                margin: 0;
+                padding: 0;
+            }
+        #map{
+                height: 100%;
+        }
+        </style>
+    </head>
+    <body>
+       
 
-function get_client_ip() {
-     $ipaddress = '';
-     if ($_SERVER['HTTP_CLIENT_IP'])
-         $ipaddress = $_SERVER['HTTP_CLIENT_IP'];
-     else if(@$_SERVER['HTTP_X_FORWARDED_FOR'])
-         $ipaddress = $_SERVER['HTTP_X_FORWARDED_FOR'];
-     else if(@$_SERVER['HTTP_X_FORWARDED'])
-         $ipaddress = $_SERVER['HTTP_X_FORWARDED'];
-     else if(@$_SERVER['HTTP_FORWARDED_FOR'])
-         $ipaddress = $_SERVER['HTTP_FORWARDED_FOR'];
-     else if(@$_SERVER['HTTP_FORWARDED'])
-         $ipaddress = $_SERVER['HTTP_FORWARDED'];
-     else if(@$_SERVER['REMOTE_ADDR'])
-         $ipaddress = $_SERVER['REMOTE_ADDR'];
-     else
-         $ipaddress = 'UNKNOWN';
+        <script type='text/javascript'>
 
-     return $ipaddress; 
-}
-  $ip=get_client_ip();   
-    
-    $ipdetails = new ipdetails($ip); 
-    $ipdetails->scan();
-    echo "<b>IP:</b>        ".$ip                        ."<br />"; 
-    echo "<b>Pa�s:</b>      ".$ipdetails->get_country()  ."<br />";
-    echo "<b>Estado:</b>    ".$ipdetails->get_region()   ."<br />";
-    echo "<b>Cidade:</b>    ".$ipdetails->get_city()     ."<br />";
-    echo "<b>Latitude:</b>  ".$ipdetails->get_latitude() ."<br />";
-    echo "<b>Longitude:</b> ".$ipdetails->get_longitude()."<br />";
-    echo "<b>C�digo pa�s:</b> ".$ipdetails->get_countrycode()."<br />";
-    echo "<b>C�digo continente:</b> ".$ipdetails->get_continentcode()."<br />";
-    echo "<b>C�digo moeda:</b> ".$ipdetails->get_currencycode()."<br />";
-    echo "<b>S�mbolo moeda:</b> ".htmlspecialchars_decode($ipdetails->get_currencysymbol())."<br />";
-    echo "<b>Cota��o moeda (d�lar):</b> ".$ipdetails->get_currencyconverter()."<br />";    
-?>
+            var lati = '';
+            var long = '';
+            var cidade = '';
+            var estado = '';
+            var pais = '';
+            var cep = '';
+            var dadosajax = '';
+
+            navigator.geolocation.getCurrentPosition(function (posicao) {
+                var url = "http://nominatim.openstreetmap.org/reverse?lat=" + posicao.coords.latitude + "&lon=" + posicao.coords.longitude + "&format=json&json_callback=preencherDados";
+
+                var script = document.createElement('script');
+                script.src = url;
+                document.body.appendChild(script);
+                lati = posicao.coords.latitude;
+                long = posicao.coords.longitude;
+               
+               
+
+            });
+ 
+            function preencherDados(dados) {
+                cidade = dados.address.city;
+                estado = dados.address.state;
+                pais = dados.address.country;
+              
+                
+               
+                
+
+
+                dadosajax = {'cidade':cidade, 'estado':estado, 'pais':pais,'lat':lati,'log':long};
+                SalvarLocal(cidade,estado,pais);
+                $("#localizacao").submit(function (e) {
+                    e.preventDefault();
+                    alert(dadosajax);
+                    $.ajax({
+                        type: "POST",
+                        url: "teste6.php",
+                        data: dadosajax
+
+                    });
+                });
+
+
+
+
+            }
+            ;
+function SalvarLocal(cidade,estado,pais,lat,log){
+            $(function(){
+               
+               $.ajax({
+                
+                    data: { 'cidade' : cidade, 'estado' : estado, 'pais' : pais,'lat' : lati,'log':long },
+                    type : "POST",
+                    url  : "teste6.php",
+            
+                });
+                
+            });
+        }
+        </script>
+    </body>
+</html>

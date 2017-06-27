@@ -1,1 +1,1 @@
-﻿
+﻿    <iframe width='450px' height='450px' frameborder='0' src='http://URL_DA_PAGINA/pagina.html'></iframe>

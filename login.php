@@ -1,9 +1,6 @@
 <?php require_once('Connections/repasses.php'); 
-
  require_once('log.php'); 
- 
-
-if (isset($_GET['facebook'])){
+ if (isset($_GET['facebook'])){
 $sql = "select *   FROM membros WHERE   idfacebook='".$_SESSION['id_facebook']."' LIMIT 1";
 		
         $dados = $mysql->query($sql);

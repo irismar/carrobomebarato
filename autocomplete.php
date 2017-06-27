@@ -1,8 +1,42 @@
 <?
 include "links.php";
 include "log.php";
-	
  $_SERVER['HTTP_REFERER'];
+$pos = strpos( $_SERVER['HTTP_REFERER'], "r=10" );
+if ($pos != false) {
+  
+  $_SESSION['km']='10';
+}
+$pos = strpos( $_SERVER['HTTP_REFERER'], "r=50" );
+if ($pos != false) {
+  
+  $_SESSION['km']='50';
+}
+$pos = strpos( $_SERVER['HTTP_REFERER'], "r=100" );
+if ($pos != false) {
+  
+  $_SESSION['km']='100';
+}
+$pos = strpos( $_SERVER['HTTP_REFERER'], "r=500" );
+if ($pos != false) {
+  
+  $_SESSION['km']='500';
+}
+$pos = strpos( $_SERVER['HTTP_REFERER'], "r=1000" );
+if ($pos != false) {
+  
+  $_SESSION['km']='1000';
+}
+$pos = strpos( $_SERVER['HTTP_REFERER'], "r=10000" );
+if ($pos != false) {
+  
+  $_SESSION['km']='10000';
+}
+$pos = strpos( $_SERVER['HTTP_REFERER'], "?p" );
+if ($pos != false) {
+  
+  $_SESSION['km']='';
+}
 
  @$ex = explode('/', $_SERVER['HTTP_REFERER']);
      @$link1 = $ex[count($ex)-1];
@@ -16,8 +50,7 @@ include "log.php";
  @$log=number_format($_SESSION['log'], 6, '.', ' ').'<br>';
 if (isset($_GET["txtnome"])) {
     $busca = trim(removeAcentos($_GET["txtnome"]));
-	
-	$sql2 = "SELECT  id FROM  membros 	WHERE  url='".trim($link1)."' LIMIT 1 ";
+   $sql2 = "SELECT  id FROM  membros 	WHERE  url='".trim($link1)."' LIMIT 1 ";
   $query2 = $mysql->query($sql2);
    $query2->num_rows;
   if ($query2->num_rows =='1') { 
@@ -35,8 +68,7 @@ LIMIT 40";
 	
 	
 	$userbusca="WHERE modelotexto LIKE" ."'%".$busca."%'"." or marcatexto LIKE" ."'%".$busca."%'"." or url LIKE" ."'%".$busca."%' AND exibir='1'";
-	
-	  $sql = "SELECT *,
+	$sql = "SELECT *,
 (6371 * acos(
 cos( radians('$lat') )
 * cos( radians( lat ) )
@@ -50,13 +82,11 @@ ORDER BY distancia ASC
 LIMIT 40";
 	
 	}
-	
-   
+	   
     if (empty($busca)) {
         
     } else {
         $busca = "AND exibir='1'";
-	
 	
 
     }
@@ -69,9 +99,7 @@ LIMIT 40";
 				 
 	////////////////////////////////////////buscar mais longe////se não encontrar no raio////////////////////////////			 
 	$userbusca="WHERE modelotexto LIKE" ."'%".$busca."%'"." or marcatexto LIKE" ."'%".$busca."%'"." or url LIKE" ."'%".$busca."%' and exibir='1'";
-	
-	
-//////////////////
+		//////////////////
  $sql = "SELECT *,
 (6371 * acos(
 cos( radians('$lat') )

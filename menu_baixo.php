@@ -12,14 +12,14 @@
 
 <div class="col-md-6">
  
-<? if (isset($_SESSION["endereco1"])){ ?>
- <iframe width="100%" scrolling="no" height="320" frameborder="0" id="map" marginheight="0" marginwidth="0" src="https://maps.google.com/maps?saddr=<? echo trim($_SESSION["endereco1"]); ?>&daddr=<? echo trim($row_estoque1['endereco']); ?>&output=embed"></iframe>
+<? if (isset($_COOKIE["endereco1"])){ ?>
+ <iframe width="100%" scrolling="no" height="320" frameborder="0" id="map" marginheight="0" marginwidth="0" src="https://maps.google.com/maps?saddr=<? echo trim($_COOKIE["endereco1"]); ?>&daddr=<? echo trim($row_estoque1['endereco']); ?>&output=embed"></iframe>
  <? }else { ?>
 <iframe width="100%" scrolling="no" height="320" frameborder="0" id="map" marginheight="0" marginwidth="0" src="https://maps.google.com/maps?saddr=<? echo trim($row_estoque1['endereco']); ?>&output=embed"></iframe>
 	
 
 <? } ?> 
-</div>
+</div> 
    <div class="col-md-12"> <div id="caixa_redesocial">
   <div class="media">
 
@@ -50,11 +50,12 @@
 	  <? }  ?>
       </div> </div>
   
-   </div></div>
+   </div></div><section id="foto">
   <div class="col-md-12"> 
  <ul class="nav nav-pills" role="tablist">
  
    <? 
+   if($modulo !='gerente'){
     if(isset($modulo)&& isset($_SESSION['usuario'])&&    @$modulo==$_SESSION['usuario']){
     
      ?>
@@ -66,7 +67,7 @@
      
      
      
-       <?  if(isset($modulo)&& isset($_SESSION['usuario'])&&    @$modulo==$_SESSION['usuario']) {?>
+       <?  if(isset($modulo)&& isset($_SESSION['usuario'])&& ( @$modulo==$_SESSION['usuario'])&& (@$modulo=='gerente')) {?>
        
        <li role="presentation" class="active"><a href="<?  echo URL::getBase(); ?>gerente/vendidos#gerente">Carros Vendidos<span class="badge"><?=$row_estoque1['carros_vendido']?></span></a></li>
 	     <? }else{ ?>
@@ -93,7 +94,22 @@
 	 <li role="presentation"  class="active"><a href="<?  echo URL::getBase(); ?>adicionar" style="background-color:#F63;">Criar Anúncio Grátris<span class="badge"></span></a></li>
      <? }else{ ?>
    <li role="presentation" class="active"><a href="<?  echo URL::getBase(); ?>mapa?rumo=<?= $row_estoque1['id'];?>">Traçar RotaGPS   <span class="badge"></span></a></li>
-    <? } ?>
+   
+   <? }?>
+  
+       <?} else { ?> 
+    <? if(isset($modulo)&& isset($_SESSION['usuario'])){?>
+   <li role="presentation"  class="active"><a href="<?  echo URL::getBase(); ?>adicionar" style="background-color:#F63;">Criar Anúncio Grátris<span class="badge"></span></a></li>
+   <li role="presentation" class="active"><a  href="<?  echo URL::getBase(); ?>gerente/vendidos#gerente">Carros Vendidos<span class="badge"><?=$row_estoque1['carros_vendido']?></span></a></li>
+    <li role="presentation" class="active"><a href="<?  echo URL::getBase(); ?>gerente/mensagens#gerente"> Mensagens<span class="badge"><?=$row_estoque1['alertamanesagem']?></span></a></li>
+     <li role="presentation" class="active"><a href="<?  echo URL::getBase(); ?>gerente/acessos#gerente">Acesso<span class="badge"><?=$row_estoque1['alvit']?></span></a></li>
+ <li role="presentation" class="active"><a href="<?  echo URL::getBase(); ?>gerente/log">log<span class="badge"></span></a></li>
+<li role="presentation" class="active"><a href="<?  echo URL::getBase(); ?>gerente/log"style="background-color:rgba(0, 150, 136, 0.83);">Assinar Plano Premium por 49,99 e ter acesso a relatórios detalhados e suporte <span class="badge"></span></a></li>
+
+   <? } ?>
+        
+        
+        <? } ?>
 </ul>
   
   </div></div> 

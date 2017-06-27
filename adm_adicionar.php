@@ -442,10 +442,10 @@ location.href="<?="/".intval($row_estoque['Id_estoque'])?>"
  <meta name="viewport" content="width=device-width, initial-scale=1">
 <? include("meta.php"); ?>
 <script type="text/javascript" src="js/jquery.js"></script>
-<script type="text/javascript" src="js/simpleAutoComplete.js"></script>
+<script type="text/javascript" src="js/simpleAutoComplete.js" async></script>
 
-<script src="Scripts/funcoes.js" type="text/javascript"></script>
-<script src="Scripts/ajax.js" type="text/javascript"></script>
+<script src="Scripts/funcoes.js" type="text/javascript" async></script>
+<script src="Scripts/ajax.js" type="text/javascript" async></script>
 
 <script type="text/javascript">
 	$(document).ready(function()

@@ -28,7 +28,7 @@
     <div class="col-md-12">
     
  
-    <div class="col-md-12">
+        <div class="desktop">
       <div class="jumbotron ">
         <h3  class="text-center">
             <img src="/img/logoadicionar.png" class="img-responsive" ></img>
@@ -42,7 +42,7 @@
                    <? } ?>
         </h3>
             para maior detalhe movar o ponto vermelho sobre o mapa
-        </div>   </div> <div class="desktop">    </div>                   </div>
+      </div>   </div><div class="mobile"> <br></br><br></br><br></br></div><div class="desktop">    </div>                   </div>
           <div class="col-md-8">   <form method="post"  action="mapa_cadastro.html">  <fieldset>
                        
                         <input  type="text" id="txtEndereco" name="txtEndereco"  placeholder="Digite Aqui Seu Endereço " >

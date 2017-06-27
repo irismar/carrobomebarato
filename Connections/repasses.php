@@ -1,31 +1,58 @@
-<?  /* ### <a href="http://charlescorrea.com.br/blog/tag/gravando-log-de-erro">GRAVANDO LOG DE ERRO</a>  ### */
-mysql_query("SET NAMES 'utf8'");
-mysql_query('SET character_set_connection=utf8');
-mysql_query('SET character_set_client=utf8');
-mysql_query('SET character_set_results=utf8');
- 
-/* ### GRAVANDO LOG DE ERRO  ### */
+<?php
+ ini_set('default_charset','UTF-8');
+?>
+<? 
 header('Content-Type: text/html; charset=utf-8');
  @session_start();
- 
+  @setcookie();
+ session_id();
  if( !isset($_SESSION['segure'])){
-$_SESSION['segure']= md5(time()); }
-
+ $_SESSION['segure']= md5(time().(time())); }
+ 
 $hora = date('Y-m-d H:i:s');
 $data = date('Y-m-d');
 // Conecta-se ao banco de dados MySQL
 //$mysql= new mysqli('localhost','root','', 'carros');
+if($_SERVER['SERVER_NAME']=="localhost"){
 $mysql= new mysqli('localhost','root','', 'u386698969_carro');
+}else{
+    $mysql= new mysqli('mysql.hostinger.com.br','u488834649_carro','irisMAR100', 'u488834649_carro');
+       }
 // Caso algo tenha dado errado, exibe uma mensagem de erro
 if (mysqli_connect_errno()) trigger_error(mysqli_connect_error());
 /*Define constant to connect to database */
+if($_SERVER['SERVER_NAME']=="localhost"){
 DEFINE('DATABASE_USER', 'root');
 DEFINE('DATABASE_PASSWORD', '');
 DEFINE('DATABASE_HOST', 'localhost');
 DEFINE('DATABASE_NAME', 'u386698969_carro');
+$servidor = "localhost";	
+	$usuario  = "root";	
+	$senha    = "";	
+	$baseDados= "u386698969_carro";
+}else{
+    $servidor = "mysql.hostinger.com.br";	
+	$usuario  = "u488834649_carro";	
+	$senha    = "irisMAR100";	
+	$baseDados= "u488834649_carro";
+DEFINE('DATABASE_USER', 'u488834649_carro');
+DEFINE('DATABASE_PASSWORD', 'irisMAR100');
+DEFINE('DATABASE_HOST', 'mysql.hostinger.com.br');
+DEFINE('DATABASE_NAME', 'u488834649_carro');   
+    
+    
+}
 
-
-
+function conectar(){
+	
+	
+	try{
+		$pdo = new PDO("mysql:host=".$servidor.";dbname=".$baseDados,$usuario,$senha);
+	}catch(PDOException $e){
+		echo $e->getMessage();
+	}
+	return $pdo;
+}
 // Make the connection:
 $dbc = @mysqli_connect(DATABASE_HOST, DATABASE_USER, DATABASE_PASSWORD,
     DATABASE_NAME);
@@ -45,9 +72,142 @@ if (!$dbc) {
  * @author Thiago Belem <contato@thiagobelem.net>
  * @link /mysql/php-e-mysql-para-iniciantes-consulta-simples/
  */
+//////////////////////////////////////////função detectar navegador//////////////////
+//
+//
+//
+     function VerificaNavegadorSO() {
+    $ip = $_SERVER['REMOTE_ADDR'];
+    $u_agent = $_SERVER['HTTP_USER_AGENT'];
+    $bname = 'Unknown';
+    $platform = 'Unknown';
+    $version= "";
 
+    if (preg_match('/linux/i', $u_agent)) {
+      echo  $platform = 'Linux';
+    }
+    elseif (preg_match('/macintosh|mac os x/i', $u_agent)) {
+        $platform = 'Mac';
+    }
+    elseif (preg_match('/windows|win32/i', $u_agent)) {
+        $platform = 'Windows';
+    }
+
+
+    if(preg_match('/MSIE/i',$u_agent) && !preg_match('/Opera/i',$u_agent))
+    {
+        $bname = 'Internet Explorer';
+        $ub = "MSIE";
+    }
+    if(preg_match('/Mozilla/i',$u_agent) && !preg_match('/Opera/i',$u_agent))
+    {
+        $bname = 'Internet Explorer';
+        $ub = "MSIE";
+    }
+
+    elseif(preg_match('/Firefox/i',$u_agent))
+    {
+        $bname = 'Mozilla Firefox';
+        $ub = "Firefox";
+    }
+    elseif(preg_match('/Chrome/i',$u_agent))
+    {
+        $bname = 'Google Chrome';
+        $ub = "Chrome";
+    }
+    elseif(preg_match('/AppleWebKit/i',$u_agent))
+    {
+        $bname = 'AppleWebKit';
+        $ub = "Opera";
+    }
+    elseif(preg_match('/Safari/i',$u_agent))
+    {
+        $bname = 'Apple Safari';
+        $ub = "Safari";
+    }
+
+    elseif(preg_match('/Netscape/i',$u_agent))
+    {
+        $bname = 'Netscape';
+        $ub = "Netscape";
+    }
+
+    $known = array('Version', @$ub, 'other');
+    $pattern = '#(?<browser>' . join('|', $known) .
+    ')[/ ]+(?<version>[0-9.|a-zA-Z.]*)#';
+    if (!preg_match_all($pattern, $u_agent, $matches)) {
+    }
+
+
+    $i = count($matches['browser']);
+    if ($i != 1) {
+        if (strripos($u_agent,"Version") < strripos($u_agent,@$ub)){
+          $version= $matches['version'][0];
+        }
+        else {
+          @$version= $matches['version'][0];
+        }
+    }
+    else {
+        @$version= $matches['version'][2];
+    }
+
+    // check if we have a number
+    if ($version==null || $version=="") {$version="?";}
+
+     $Browser = array(
+            'userAgent' => $u_agent,
+            'name'      => $bname,
+            'version'   => $version,
+            'platform'  => $platform,
+            'pattern'    => $pattern
+    );
+
+ $_SESSION['navegador']=   $navegador = "Navegador: " . $Browser['name'] . " " . $Browser['version'];
+    $so = "SO: " . $Browser['platform'];
+
+    /* Para finalizar coloquei aqui o meu insert para salvar na base de dados... Não fiz nada para mostrar em tela, pois só uso para fins de log do sistema  */
+}
+
+ VerificaNavegadorSO(); 
+//
+//
+//
+//
+///////////////////////////////fim função detectar nafgedaor///////////////////////////
 // Dados de acesso ao servidor MySQL
+function salvaLog($mensagem) {
+  $ip = $_SERVER['REMOTE_ADDR']; // Salva o IP do visitante
+  $hora = date('Y-m-d H:i:s'); // Salva a data e hora atual (formato MySQL)
+  @$navegador=$_SESSION['navegador'];
+  @$endereco=$_SESSION['endereco1'];
+  @$cidade=$_SESSION['cidade'];
+  @$estado=$_SESSION['estado'];
+  @$id=@$_SESSION['id'];
+  @$nome=@$_SESSION['usuario'];
+  
 
+  
+  if($_SERVER['SERVER_NAME']=="localhost"){
+$conect= new mysqli('localhost','root','', 'u386698969_carro');
+}else{
+    $conect= new mysqli('mysql.hostinger.com.br','u488834649_carro','irisMAR100', 'u488834649_carro');
+       }
+
+  
+// Caso algo tenha dado errado, exibe uma mensagem de erro
+if (mysqli_connect_errno()) trigger_error(mysqli_connect_error());
+
+$sql="INSERT INTO log (data,ip,  mensagem,endereco,id_usuario,nome,maquina) VALUES 
+( '".$hora."','".$ip."','". $mensagem."','".$endereco."','".$id."','".$nome."','".$navegador."')"  ;
+$sql=$conect->query($sql); 
+if ($sql) {
+return true;
+} else {
+return false;
+}
+}
+       
 function IsLoggedIn()
 {
 return (@$_SESSION["Status"] == "repasses");
@@ -776,211 +936,22 @@ return ($miles * 0.8684);
 return $miles;
 }
 }
-function getrealip()
-{
-if (isset($_SERVER)){
-if(isset($_SERVER["HTTP_X_FORWARDED_FOR"])){
-$ip = $_SERVER["HTTP_X_FORWARDED_FOR"];
-if(strpos($ip,",")){
-$exp_ip = explode(",",$ip);
-$ip = $exp_ip[0];
-}
-}else if(isset($_SERVER["HTTP_CLIENT_IP"])){
-$ip = $_SERVER["HTTP_CLIENT_IP"];
-}else{
-$ip = $_SERVER["REMOTE_ADDR"];
-}
-}else{
-if(getenv('HTTP_X_FORWARDED_FOR')){
-$ip = getenv('HTTP_X_FORWARDED_FOR');
-if(strpos($ip,",")){
-$exp_ip=explode(",",$ip);
-$ip = $exp_ip[0];
-}
-}else if(getenv('HTTP_CLIENT_IP')){
-$ip = getenv('HTTP_CLIENT_IP');
-}else {
-$ip = getenv('REMOTE_ADDR');
-}
-}
-return $ip; 
-}
-function segurancastring($s) {
-$s = addslashes($s);
-$s = htmlspecialchars($s);
-$s = mysql_escape_string($s);
-$s = str_ireplace("SELECT","",$s);
-$s = str_ireplace("FROM","",$s);
-$s = str_ireplace("WHERE","",$s);
-$s = str_ireplace("INSERT","",$s);
-$s = str_ireplace("UPDATE","",$s);
-$s = str_ireplace("DELETE","",$s);
-$s = str_ireplace("DROP","",$s);
-$s = str_ireplace("*","",$s);
-$s = str_ireplace("&","",$s);
-$s = str_ireplace("=","",$s);
-$s = str_ireplace("DATABASE","",$s);
-$s = str_ireplace("USE","",$s);
-return $s;}
-function salvaLog($mensagem) {
-$lista_navegadores = array("MSIE","Windows NT", "Firefox", "Chrome", "Safari", "OPR");
- $navegador_usado = $_SERVER["HTTP_USER_AGENT"];
+function get22_client_ip() {
+     $ipaddress = '';
+     if ($_SERVER['HTTP_CLIENT_IP'])
+         $ipaddress = $_SERVER['HTTP_CLIENT_IP'];
+     else if($_SERVER['HTTP_X_FORWARDED_FOR'])
+         $ipaddress = $_SERVER['HTTP_X_FORWARDED_FOR'];
+     else if($_SERVER['HTTP_X_FORWARDED'])
+         $ipaddress = $_SERVER['HTTP_X_FORWARDED'];
+     else if($_SERVER['HTTP_FORWARDED_FOR'])
+         $ipaddress = $_SERVER['HTTP_FORWARDED_FOR'];
+     else if($_SERVER['HTTP_FORWARDED'])
+         $ipaddress = $_SERVER['HTTP_FORWARDED'];
+     else if($_SERVER['REMOTE_ADDR'])
+         $ipaddress = $_SERVER['REMOTE_ADDR'];
+     else
+         $ipaddress = 'UNKNOWN';
 
-foreach($lista_navegadores as $valor_verificar)
-{
-if(strrpos($navegador_usado, $valor_verificar))
-{
-@$navegador = $valor_verificar;
-
-$posicao_inicial = strpos($navegador_usado, $navegador) + strlen($navegador);
-$versao = substr($navegador_usado, $posicao_inicial, 5);
+     return $ipaddress; 
 }
-}
- $naveg=$navegador."".$versao;
-  $ip=getrealip();
-  $hora = date('Y-m-d H:i:s'); // Salva a data e hora atual (formato MySQL)
-  @$endereco=$_SESSION['endereco1'];
-  @$cidade=$_SESSION['cidade'];
-  @$estado=$_SESSION['estado'];
-  @$id=@$_SESSION['id'];
-  @$nome=@$_SESSION['usuario'];
-  $conect= new mysqli('localhost','root','', 'u386698969_carro');
-// Caso algo tenha dado errado, exibe uma mensagem de erro
-  if (mysqli_connect_errno()) trigger_error(mysqli_connect_error());
-  @mysql_query("SET NAMES 'utf8'");
-  @mysql_query('SET character_set_connection=utf8');
-  @mysql_query('SET character_set_client=utf8');
-  @mysql_query('SET character_set_results=utf8');
-  ini_set('default_charset','utf-8');
-  $sql="INSERT INTO log (data,ip,mensagem,maquina,endereco) VALUES 
-( '".$hora."','".$ip."','". $mensagem."','".$navegador_usado."','".$endereco."')"  ;
-$sql=$conect->query($sql); 
-if ($sql) {
-return true;
-} else {
-return false;
-}
-}
-function calculardias($data) {
-          $data_inicial =FormataData($data);
-$data_final = date('d.m.Y');
-// Cria uma fun��o que retorna o timestamp de uma data no formato DD/MM/AAAA
-// Usa a fun��o criada e pega o timestamp das duas datas:
-$time_inicial = geraTimestamp($data_inicial);
-$time_final = geraTimestamp($data_final);
-// Calcula a diferen�a de segundos entre as duas datas:
-$diferenca = $time_final - $time_inicial; // 19522800 segundos
-// Calcula a diferen�a de dias
-$dias = (int)floor( $diferenca / (60 * 60 * 24)); // 225 dias
-// Exibe uma mensagem de resultado:
-
-
-if($dias == 0) {return "Hoje";}
-	if($dias == 1) {return "Ontem";}
-   
-
-
-	if($dias < 7 ) {
-		return $dias . " dias ";
-	}
-	else {
-		if($dias < 30) {
-			return round($dias / 7) . " semana(s) ";
-		}
-		else {
-			if($dias < 365) {
-				return round($dias / 30) . " mês(es) ";
-			}
-			else {
-				return round($dias / 365) . " ano(s) ";
-			}
-		}
-	}
-
-}
-function calculardiasvenda($data,$datavenda) {
-          $data_inicial =FormataData($data);
-$data_final =FormataData($datavenda);
-// Cria uma fun��o que retorna o timestamp de uma data no formato DD/MM/AAAA
-// Usa a fun��o criada e pega o timestamp das duas datas:
-$time_inicial = geraTimestamp($data_inicial);
-$time_final = geraTimestamp($data_final);
-// Calcula a diferen�a de segundos entre as duas datas:
-$diferenca = $time_final - $time_inicial; // 19522800 segundos
-// Calcula a diferen�a de dias
-$dias = (int)floor( $diferenca / (60 * 60 * 24)); // 225 dias
-// Exibe uma mensagem de resultado:
-
- echo "Vendido em"."&nbsp;" .$dias ."&nbsp;". "DIAS";
-}
-function deletarmensagem_eurementente($delet,$usuario,$id_usuario){
-
-       $deletar = "DELETE FROM propostas WHERE id = ".$delet." AND remetene='".$usuario."' ";
-	   $Result1 = mysql_query($deletar) or die(mysql_error());
-	   $view = "UPDATE membros SET alertamanesagem=0  WHERE id = ".$id_usuario."";
-        $executa = mysql_query($view) or die(mysql_error());
-       }
-function deletarmensagem_eudestinatario($delet,$usuario,$id_usuario){
-
-       $deletar = "DELETE FROM propostas WHERE id = ".$delet." AND Destinatario='".$usuario."' ";
-	   $Result1 = mysql_query($deletar) or die(mysql_error());
-	   $view = "UPDATE membros SET alertamanesagem=0  WHERE id = ".$id_usuario."";
-        $executa = mysql_query($view) or die(mysql_error());
-       }	   
-	   function deletartodasmensagem($delet,$usuario,$id_usuario){
-       $deletar = "DELETE FROM propostas WHERE id_estoque = ".$delet." AND Destinatario='".$usuario."' OR   remetene='".$usuario."' ";
-	   $Result1 = mysql_query($deletar) or die(mysql_error());
-	   $view = "UPDATE membros SET alertamanesagem=0  WHERE id = ".$id_usuario."";
-        $executa = mysql_query($view) or die(mysql_error()); }	
-	   function deletartodasvisitas($delet){
-       $deletar = "DELETE FROM acessos WHERE id_estoque = ".$delet." ";
-	   $Result1 = mysql_query($deletar) or die(mysql_error());}	
-function maisdias($vendido){ 
- $data = date('Y-m-d');
- $view = "UPDATE estoque SET data_cadastro='".$data."'  WHERE Id_estoque = ".$vendido."";
- $executa = mysql_query($view) or die(mysql_error());
-	
-  } 
-function gostei($busca){ 
-$atualizar=$mysql->query("UPDATE estoque SET gostei= gostei+1 WHERE  Id_estoque=". $busca."");
-	  } 
-	  function naogostei($busca){ 
-$mysql->query("UPDATE estoque SET naogostei = naogostei+1 WHERE  Id_estoque=". $busca."");
-	  } //grama a função vendido//	      
-function vendido($vendido,$quem){
-$data = date('Y-m-d');
-       $mysql->query=( "UPDATE estoque SET  vendido='SIM',datavenda='".$data."'  WHERE Id_estoque = ".$vendido." ");
-       $mysql->query=( "UPDATE membros SET carros= -1 WHERE id = ".$quem."");
-       
-}
-function faleconosco($nome,$email,$mensagem,$setor){
-  $data=date('Y-m-d');
-$updateSQL = "INSERT INTO faleconosco(nome,email,mensagem,setor,hora )
-		VALUES ('".$nome."','".$email."','".$mensagem."','".$setor."','".$hora."')";
-		 $Result2 = mysql_query($updateSQL) or die(mysql_error());
-		
-if($updateSQL) {
-    echo "Mensagem enviada com sucesso ";
-    $mensagem =$_POST['nome'] ."Enviou mensagem para administrador com sucesso" ;
-	@salvaLog($mensagem);
-    header("Location: enviar.php?prok");
-	exit();				
-
-	 }
-}
-function selecionar ($tabela,$ordem){
-     $query_login =   "SELECT *  FROM  '".$tabela."'	 ORDER BY '".$ordem."' DESC";
-	 $login = mysql_query($query_login) or die(mysql_error());
-	 $row_selecionar = mysql_fetch_assoc($login);
-	 $totalRows_login = mysql_num_rows($login);}
-	 
-	 
-function verificar($tabele, $linha,$criterio1,$criterio2,$criterio3){
-$sql = "SELECT ".$linha." FROM ".$tabele."	WHERE   modelotexto LIKE '%".$modulo."%'	AND estado= '".$_SESSION['estado']."' AND cidade='".$_SESSION['cidade']."' ORDER BY Id_estoque DESC LIMIT 999";
-  $query = $mysql->query($sql);
-  $query->num_rows;
-	if ($query->num_rows  != '0') { 
-	$_SESSION['buscar']= "WHERE modelotexto LIKE"."'%".$modulo."%'". " AND estado="."'".$_SESSION['estado']."'". " AND cidade="."'".$_SESSION['cidade']."'"; 
-	require_once"membro.php";	exit(); }
-}	 
-       ?>

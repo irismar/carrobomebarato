@@ -97,10 +97,11 @@ if ($totalRows_estoque == 0) {
  //fim        
   	   ?>
        
-<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
-<script src="Scripts/jquery-1.3.2.min.js" type="text/javascript" language="javascript"></script>
-<script type="text/javascript" language="javascript" src="Scripts/ajax.js"></script>
+
  <script>
+
+     
+     
 function  mostrar(ID){
 	document.getElementById(ID).style.display = "block";
 
@@ -118,6 +119,17 @@ function altera_display(id) {
 		document.getElementById(id).style.display = "none";
 	}
 }</script>
- 
+ <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
+<script src="Scripts/jquery-1.3.2.min.js" type="text/javascript" language="javascript"></script>
+<script type="text/javascript" language="javascript" src="Scripts/ajax.js"></script>
     
-</div></div>
+
+<? 
+// Terminamos o "contador" e exibimos
+list($usec, $sec) = explode(' ', microtime());
+$script_end = (float) $sec + (float) $usec;
+$elapsed_time = round($script_end - $script_start, 5);
+
+// Exibimos uma mensagem
+echo 'Elapsed time: ', $elapsed_time, ' secs. Memory usage: ', round(((memory_get_peak_usage(true) / 1024) / 1024), 2), 'Mb'; ?>
+</div>

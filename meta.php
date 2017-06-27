@@ -11,15 +11,31 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="icon" href="/img/favicon.ico">
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css">
+   <?  if(isset($_SESSION['horizontal'])&&($_SESSION['horizontal']="ok")){ ?>
+    <link href="/css/bootstrap1.css?<?php echo microtime();?>"  media='all' rel="stylesheet">
+    <link href="/css/ie1.css?<?php echo microtime();?>"  media='all' rel="stylesheet">
+<?}else{?>
     <link href="/css/bootstrap.css?<?php echo microtime();?>"  media='all' rel="stylesheet">
-     <link href="/css/ie.css?<?php echo microtime();?>"  media='all' rel="stylesheet">
-         
+    <link href="/css/ie.css?<?php echo microtime();?>"  media='all' rel="stylesheet">
+<?} ?>
+
+    
+        
   <!-- Just for debugging purposes. Don't actually copy this line! -->
 <!--[if lt IE 9]><script src="js/ie8-responsive-file-warning.js"></script>
 <![endif]-->
-
-
+<!--[if lt IE 8]>
+<script src="js/ie8-responsive-file-warning.js"></script>
+  <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+  <script src="https://oss.maxcdn.com/libs/respond.js/1.3.0/respond.min.js"></script>
+<![endif]-->
+<!--[if lt IE 7]>
+<!--[if lt IE 7]><script src="js/ie8-responsive-file-warning.js"></script>
+  <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+  <script src="https://oss.maxcdn.com/libs/respond.js/1.3.0/respond.min.js"></script>
+<![endif]-->
 <!--[if lt IE 9]>
+<script src="js/ie8-responsive-file-warning.js"></script>
   <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
   <script src="https://oss.maxcdn.com/libs/respond.js/1.3.0/respond.min.js"></script>
 <![endif]-->
@@ -31,6 +47,7 @@
   if (IsLoggedIn()) {
 
   ?>
+    <meta name="theme-color" content="#000000" />
 <meta itemprop="name" content="Título ou nome“>
 <meta itemprop="description" content="Descrição da página“>
 <meta itemprop="image" content="img/logo.jpg“>
@@ -91,4 +108,8 @@
     <meta name="description" content="Em todo Brasil só carrobomebarato.com tem os melhores carros ">
     <meta name="keywords" content="carrobomebarato.com,classificados carros,carros usados,usados,gol usado,fiet usado,uno usasado ,anuncio gratis,carro,bom,barato,celta ,corsa ,preisma">
      <link rel="icon" type="image/jpg" href="img/logo.jpg"  sizes="36x36"> 
-<? } ?> 
+<? } 
+
+
+
+?> 

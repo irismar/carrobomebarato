@@ -161,6 +161,9 @@ input[type="search"]::-webkit-search-cancel-button,
 input[type="search"]::-webkit-search-decoration {
   -webkit-appearance: none;
 }
+iframe{ overflow:hidden;
+        width: 100%;
+}
 fieldset {
   padding: .35em .625em .75em;
   margin: 0 2px;
@@ -184,21 +187,30 @@ td,
 th {
   padding: 0;
 }
+ .navbar-right{ width:100%; margin-top:60px!important; margin-bottom:10px; }
+ .navbar-right2{ width:68%; margin-top:-10px!important}
+ 
+  .navbar-right img{ width:100%}
 .list-group{width:100%; font-size:12px; color:#428bca; }
 .list-group-item  a:hover{   color:rgba(66, 139, 202, 0.78);}
 
 .navbar-header { width:30%}
 .navbar-header img{ width:100%}
-@media screen and (min-width:0px) and (max-width: 767px) {
+@media screen and (min-width:401px) and (max-width: 767px) {
 .navbar-brand{width:80%}
 .navbar-header { width:100%}
 .navbar-header img{ width:100%}
+ .navbar-right{ width:100%; margin-top:60px!important; margin-bottom:10px; }
+}
+@media screen and (min-width:0px) and (max-width: 400px) {
+.navbar-brand{width:60%}
+.navbar-header { width:100%}
+.navbar-header img{ width:100%}
+ .navbar-right{ width:100%; margin-top:40px!important; margin-bottom:10px; }
+.navbar-right2{ width:110%; margin-top:-10px!important}
 }
 
- .navbar-right{ width:70%; margin-top:40px!important; margin-bottom:10px; }
- .navbar-right2{ width:68%; margin-top:-10px!important}
- .navbar-right2{ width:68%; margin-top:-10px!important}
-  .navbar-right img{ width:100%}
+
 @media print {
   * {
     color: #000 !important;
@@ -341,7 +353,7 @@ img {
   padding: 4px;
   line-height: 1.42857143;
   background-color: #fff;
-  border: 1px solid #ddd;
+ 
   border-radius: 4px;
   -webkit-transition: all .2s ease-in-out;
           transition: all .2s ease-in-out;
@@ -756,7 +768,7 @@ pre code {
 }
 @media (min-width: 768px) {
   .container {
-    width: 750px;
+    width: 100%;
   }
 }
 @media (min-width: 992px) {
@@ -3029,10 +3041,10 @@ input[type="button"].btn-block {
   z-index: 1000;
   display: none;
   float: left;
-  min-width: 160px;
+  min-width: 260px;
   padding: 5px 0;
   margin: 2px 0 0;
-  font-size: 14px;
+  
   list-style: none;
   background-color: #fff;
   background-clip: padding-box;
@@ -3672,7 +3684,7 @@ select[multiple].input-group-sm > .input-group-btn > .btn {
   }
 }
 .navbar-collapse {
-  max-height: 340px;
+  
   padding-right: 15px;
   padding-left: 15px;
   overflow-x: visible;
@@ -3756,7 +3768,7 @@ select[multiple].input-group-sm > .input-group-btn > .btn {
   float: left;
   height: 50px;
   padding: 15px 15px;
-  font-size: 18px;
+  font-size: 100%;
   line-height: 20px;
 }
 .navbar-brand:hover,
@@ -4422,9 +4434,10 @@ a.list-group-item.active > .badge,
   display: block;
   padding: 4px;
   margin-bottom: 20px;
+  margin-left:20px;
   line-height: 1.42857143;
   background-color: #fff;
-  border: 1px solid #ddd;
+  
   border-radius: 4px;
   -webkit-transition: all .2s ease-in-out;
           transition: all .2s ease-in-out;

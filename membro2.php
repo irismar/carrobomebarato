@@ -1,4 +1,9 @@
 ﻿   <?php 
+if (strcmp(basename($_SERVER['SCRIPT_NAME']), basename(__FILE__)) === 0){
+
+header("location:/erro.php");
+
+}
    $link = $_SERVER['REQUEST_URI'];
     $ex = explode('/', $link);
 $link1 = $ex[count($ex)-2];
@@ -53,7 +58,7 @@ $dados = $mysql->query($sql);
  $membros = $mysql->query($sql);
  $totalRows_modelos = $membros->num_rows;
 	if ($totalRows_modelos != 0) { 
-	while ($row_estoque1 = $membros->fetch_assoc()) {  
+	while ($row_estoque1 = $membros->fetch_assoc()) {  ?><?
     	include'menu_baixo.php';
  } 
   	 } 
@@ -63,25 +68,36 @@ $dados = $mysql->query($sql);
 		 include("maim_ver.php");    ?> </div>
 	 
 	 
-	         <?    $sql = "SELECT Id_estoque ,ano,ano2,foto_carro,marcatexto,modelotexto,preco,km,nome_membro,url vendido FROM  estoque 	WHERE url='".$donourl."' AND  Id_estoque!= '".$modulo."' order by Id_estoque DESC LIMIT 10";
+	         <?    $sql = "SELECT Id_estoque ,ano,ano2,foto_carro,marcatexto,modelotexto,preco,km,nome_membro,url vendido FROM  estoque 	WHERE url='".$donourl."' AND  Id_estoque!= '".$modulo."' order by Id_estoque DESC LIMIT 12";
  $estoque = $mysql->query($sql);
 $totalRows_modelos = $estoque->num_rows;
 	if ($totalRows_modelos > 0) { ?>
-           <div id="centro">
-	 <?  while ($row_estoque3 = $estoque->fetch_assoc()) {   ?> 
-	   
-		
-               <ul> <a href="/<? echo $row_estoque3['Id_estoque']?>"> <img src="/galeriadefotos/peq/<? if (($row_estoque3['foto_carro'] <> '') and ((file_exists("galeriadefotos/peq/".$row_estoque3['foto_carro'])))) { echo $row_estoque3['foto_carro']; } else { echo "avatar.png"; } ?>"  ></a> 
-               <p> </a> <a href="/<? echo $row_estoque3['Id_estoque']?>"></p>
-			   <p><?  echo @$row_estoque3['modelotexto']; ?></p>
-			  
-			   <p> <? if (isset($row_estoque3['preco'])){ ?>
+           <div class="container">
+	 <?  while ($row_estoque3 = $estoque->fetch_assoc()) {   ?>
+
+  <div class="col-sm-5 col-md-5">
+    <ol class="breadcrumb"> <div class="thumbnail">
+        <a href="/<? echo $row_estoque3['Id_estoque']?>"> <img src="/galeriadefotos/peq/<? if (($row_estoque3['foto_carro'] <> '') and ((file_exists("galeriadefotos/peq/".$row_estoque3['foto_carro'])))) { echo $row_estoque3['foto_carro']; } else { echo "avatar.png"; } ?>" class="img2"   ></a> 
+               
+      <div class="caption">
+     <div class="text-left">
+    <li ><i class="fa fa-user fa-1x" aria-hidden="true"><?php echo @$row_estoque3['modelotexto']; ?></i></li>
+     <li ><i class="fa fa-money fa-1x" aria-hidden="true"> <? if ($row_estoque3['preco']!=''){ ?>
     <? echo "R$". '&nbsp;'.  @number_format(trim($row_estoque3['preco']), 2, ',', '.');
-?></a>  <? } else { echo " R$ A  combinar" ; } ?></p>
+    ?></a>  <? } else { echo " R$ A  combinar" ; } ?></i></li>
+          </div>
+        
+      
+      </div></div></ol>
+    
+  </div>
+          
+                   
+	   
 
 
-                  </ul>
-       <?   }}} ?></div>   
+                
+       <?   } ?> </div><?}} ?>  
                 
            
 

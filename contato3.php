@@ -2,7 +2,7 @@
  <html>
  <head>
     <title></title>
-        <script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>     
+        <script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"  async></script>     
         <script type="text/javascript">
         function atualizarTarefas() {
            // aqui voce passa o id do usuario

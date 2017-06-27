@@ -1,10 +1,72 @@
 <? 
+
 require_once'Connections/repasses.php'; 
  require_once('log.php');
+ if($_SERVER['SERVER_NAME']=="localhost"){
+$ip='177.17.186.232';
+}else{
+$ip=get22_client_ip();  
+       }  //$ip=get22_client_ip(); 
   include "lib/WideImage.php";
 /////////////////atualizar///usuario//////////////////inicio////
+if ((isset($_GET["horizontal"])) ) { 
+   unset($_SESSION['horizontal']);
+   unset($_SESSION['grade']);
+   $_SESSION['horizontal']="ok";
+   header("Location: ". $_SERVER['HTTP_REFERER']."");
+   exit();
+   }
+if ((isset($_GET["grade"])) ) { 
+    unset($_SESSION['horizontal']);
+    unset($_SESSION['grade']);
+    $_SESSION['grade']="ok";
+    ob_end_clean();
+    header("Location: ". $_SERVER['HTTP_REFERER']."");
+    exit();}
 
+/////////////////////////codigo faleconosco////////////////////
+//
+//
+//
+if(isset($_GET['proposta'])){
+    
+$nome = mysql_real_escape_string($_POST['nome']);
+$email =mysql_real_escape_string( $_POST['email']);
+$mensagem = mysql_real_escape_string($_POST['mensaguem']);
+$setor =mysql_real_escape_string( $_POST['setor']);
 
+//Abrindo Conexao com o banco de dados
+
+$data=date('Y-m-d');
+$sql="INSERT INTO faleconosco(nome,email,mensagem,setor,hora,ip,endereco )
+		VALUES ('".$nome."','".$email."','".$mensagem."','".$setor."','".$hora."','".$ip."','".$_SESSION['endereco1']."')";
+$sql= $mysql->query($sql);
+		
+if($sql) {
+   
+ $mensagem =$_POST['nome'] ."Enviou mensagem para administrador com sucesso" ;
+
+	@salvaLog($mensagem);
+   
+		
+ ob_end_clean();
+	header("Location: faleconosco/sucesso");
+	exit(); 
+	 }
+$mensagem =$_POST['nome'] ."ERRO mensagem para administrador com sucesso" ;
+
+  @salvaLog($mensagem);
+  ob_end_clean();
+	header("Location: faleconosco/falou");
+	exit();
+
+  }
+
+//
+//
+//
+////////////////////////fim codigo faleconosco///////////////
+/////////////////atualizar///usuario//////////////////inicio////
 if ((isset($_GET["editar_user"])) ) { 
  if(trim($_SESSION['segure'])==trim($_POST['segure'])){ 	
 require('admin/includes/tng/tNG.inc.php'); 
@@ -63,8 +125,8 @@ $sTmpFolder = "galeriadefotos/";
 if($_FILES['imagem']['size'] > 0)
 	{
 		
-	$mysql->query("UPDATE membros SET  endereco='".$_POST['endereco']."', cidade='".$_POST['cidade']."', estado='".$_POST['estado']."',watapps='".$_POST['watapps']."',oi='".$_POST['oi']."',vivo='".$_POST['vivo']."',tim='".$_POST['tim']."',claro='".$_POST['claro']."',fixo='".$_POST['fixo']."', email='".$_POST['email']."', senha='".$senha."' ,foto='".$imagem."' WHERE id='".$_SESSION["id"]."'");
-      	   $mysql->query("UPDATE estoque SET  foto_membro='".$imagem."', cidade='".$_POST['cidade']."', estado='".$_POST['estado']."' WHERE id_membro='".$_SESSION["id"]."'");
+	$mysql->query("UPDATE membros SET watapps='".$_POST['watapps']."',oi='".$_POST['oi']."',vivo='".$_POST['vivo']."',tim='".$_POST['tim']."',claro='".$_POST['claro']."',fixo='".$_POST['fixo']."', email='".$_POST['email']."', senha='".$senha."' ,foto='".$imagem."' WHERE id='".$_SESSION["id"]."'");
+      	   $mysql->query("UPDATE estoque SET  foto_membro='".$imagem."' WHERE id_membro='".$_SESSION["id"]."'");
 		  
 		   $_SESSION['foto']=trim($imagem);
             $mensagem =$_SESSION["usuario"]. "Atualizou eus dados com sucesso";
@@ -123,8 +185,8 @@ $sql2 = "SELECT  * FROM  estoque	WHERE  Id_estoque='".$vendido."' LIMIT 1 ";
   $query2 = $mysql->query($sql2);
   
     while($row_vendido= $query2->fetch_assoc()) { 
-	 $dias=calculardiasvenda($row_vendido['data_cadastro'],$data);
-	echo  $sql= "INSERT INTO vendido (nome_membro,id_membro,id_estoque,modelo,marca,data_anuncio,data_venda,dias,acessos,endereco,foto,preco)
+	 $dias=calculardiasvenda($row_vendido['data'],$data);
+	 $sql= "INSERT INTO vendido (nome_membro,id_membro,id_estoque,modelo,marca,data_anuncio,data_venda,dias,acessos,endereco,foto,preco)
 	 VALUES ('".$row_vendido['nome_membro']."','".$row_vendido['id_membro']."','".$row_vendido['Id_estoque']."','".$row_vendido['modelotexto']."','".$row_vendido[     'marcatexto']."','".$row_vendido['data_cadastro']."','".$data."','".$dias."','".$row_vendido['acessos']."','".$row_vendido[     'endereco']."','".$row_vendido['foto_carro']."','".$row_vendido['preco']."')";
        $sql=$mysql->query($sql);
 	   
@@ -172,13 +234,14 @@ ob_end_clean();
 		exit();}
 		 
    if (isset(  $_GET['deletar_eudestinatario'])){ 
-       $delet= alphaID($_GET['deletar_eudestinatario'],true);
-       $mysql->query("DELETE FROM propostas WHERE id = ".$delet." AND Destinatario='".$_SESSION['usuario']."' ");
+      echo  $delet= trim($_GET['deletar_eudestinatario']);
+      echo  $id_estoque= trim($_GET['id_estoque']);
+      echo  $mysql->query("DELETE FROM propostas WHERE cod_seguranca='$delet' AND id_estoque='$id_estoque'   ");
        $mysql->query("UPDATE membros SET alertamanesagem=0  WHERE id = ".$_SESSION['id']."");
        $mensagem=" usuario"."&nbsp;". $_SESSION['usuario']."&nbsp;". "deletou mensagem"."&nbsp;".  $delet;
        @salvaLog($mensagem);
        ob_end_clean();header("Location: ". $_SERVER['HTTP_REFERER']."");
-	   exit();} 
+	   } 
 	   
 	if (isset(  $_GET['DTM'])){ 
       $delet= alphaID($_GET['DTM'],true);
@@ -198,48 +261,45 @@ ob_end_clean();
  } 
 				
 if (isset($_GET['memsagem'])) { 
-  $sql="INSERT INTO propostas (Destinatario,remetene,mensagem,id_estoque,email,data,foto,endereco) VALUES ('".$_GET['memsagem']."', '".$_POST['nome']."','".$_POST['memsagem']."','".$_GET['id']."','".$_POST['email']."','".$hora."','".@trim($_GET['foto'])."','".$_SESSION['endereco1']."')";
+ $sql="INSERT INTO propostas (Destinatario,remetene,mensagem,id_estoque,email,data,foto,endereco,cod_seguranca,alerta,id_membro,marca,modelo,preco) VALUES ('".$_GET['memsagem']."', '".@$_POST['nome']."','".$_POST['memsagem']."','".$_GET['id']."','".$_POST['email']."','".$hora."','".@trim($_GET['foto'])."','".$_GET['endereco1']."','".$_SESSION['segure']."',+1,'".@trim($_GET['id_membro'])."','".@trim($_GET['marca'])."','".@trim($_GET['modelo'])."','".@trim($_GET['preco'])."')";
     $sql= $mysql->query($sql);  
-	
+   
   if($sql) {
+    unset($_SESSION["mens_id_estoque"] );
     $_SESSION["mens_id_estoque"] =$_GET['id'];
     $_SESSION["msm"]="Memsagem Enviada Com Sucesso ";
-    $mensagem ="Usuario "."&nbsp;".$_POST['nome']." mandou uma memsagem para usuario"."&nbsp;".$_GET['memsagem'] ."&nbsp;"." com sucesso" ;
+    $mensagem ="Usuario "."&nbsp;".@$_POST['nome']." mandou uma memsagem para usuario"."&nbsp;".$_GET['memsagem'] ."&nbsp;"." com sucesso" ;
     $mysql->query("UPDATE membros SET alertamanesagem=alertamanesagem + 1  WHERE id = ".$_GET['id_membro']."");
-	  salvaLog($mensagem);
-	 
+    salvaLog($mensagem);
+    $_SESSION['nome_visita']=$_POST['nome'];
+    $_SESSION['telefone_visita']=$_POST['email'];
+    $urlanteior=$_SERVER['HTTP_REFERER'];
+    $retorno=$urlanteior.'#'.trim($_GET['id']);
+	
 	    ?>
   
   <script language= "JavaScript">
-location.href="<?=$_SERVER['HTTP_REFERER']?>"
+location.href="<?=$retorno;?>"
 </script>
 <?  
-	exit();
+	
 	
  }else{
   $_SESSION["mens_id_estoque"] =$_GET['id'];
   $_SESSION["msm"]="Erro ao enviar mensagem  ";
-  $mensagem ="Usuario "."&nbsp;".$_POST['nome']." mandou uma memsagem para usuario"."&nbsp;".$_GET['memsagem'] ."&nbsp;"." com sucesso" ;
+ echo  $mensagem ="Usuario "."&nbsp;".$_POST['nome']." mandou uma memsagem para usuario"."&nbsp;".$_GET['memsagem'] ."&nbsp;"." com sucesso" ;
 //salvaLog($mensagem);
  }}
 
 if (isset($_GET['responder'])) { 
-  if( @$_SESSION["mens_id_estoque"]==$_GET['resposta']){
-  echo "você já Enviou mensagem";
- ?> <script language= "JavaScript">
-location.href="<?=$_SERVER['HTTP_REFERER']?>"
-</script><?
-	exit();
-	  }	
+ 	
   
    $sql="INSERT INTO propostas ( 	
 
-Destinatario,remetene,mensagem,id_estoque,email,data,foto,resposta) VALUES 
-('".$_GET['responder']."', '".$_POST['nome']."','".$_POST['memsagem']."','".$_GET['id_estoque']."','".$_POST['email']."','".$hora."','".$_GET['foto']."','".$_GET['resposta']."')";
+Destinatario,remetene,mensagem,id_estoque,email,data,foto,resposta,cod_seguranca) VALUES 
+('".$_GET['responder']."', '".$_POST['nome']."','".$_POST['memsagem']."','".$_GET['id_estoque']."','".$_POST['email']."','".$hora."','".$_GET['foto']."','".$_GET['resposta']."','".$_POST['cod_seguranca']."')";
   $sql= $mysql->query($sql); 
-  
-  
-     if( $sql){
+  if( $sql){
          $_SESSION["mens_id_estoque"] =  $_GET['resposta'];
           	
    $_SESSION["msm"]="Memsagem Enviada Com Sucesso ";
@@ -295,5 +355,29 @@ if (isset( $_GET['90dias'])){
 	header("Location: ". $_SERVER['HTTP_REFERER']."");
 	
 	  exit();
-  }	 
+  }
+  if (isset( $_GET['recuperar'])){
+    
+$data=date('Y-m-d');
+$email= segurancastring($_POST['email']);
+echo $sql="INSERT INTO esquecir(email,ip,data )VALUES ('".$email."','".$ip."','".date('Y-m-d')."')";
+$sql= $mysql->query($sql);
+	
+if($sql) {
+   
+ echo $mensagem =$_POST['nome'] ."Enviou mensagem para administrador com sucesso" ;
+
+	@salvaLog($mensagem);
+   
+	header("Location: /recuperar?sucesso");	
+
+	 }else{
+echo $mensagem =$_POST['nome'] ."ERRO mensagem para administrador com sucesso" ;
+
+  @salvaLog($mensagem);
+
+header("Location: /recuperar?erro");
+  }
+  
+      }
   ?>

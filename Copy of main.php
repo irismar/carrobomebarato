@@ -120,7 +120,7 @@ unset($_SESSION["horizontal"]); ?>
 	
 	
 	  
-	  if(@$ordem23){ ?>
+	  if(@$ordem2utf8
 	<a href="<?php echo $link; ?>&&ordem=seminovo"  > <? echo  acento('- Novo'); ?></a>
 	<? }  
 	elseif(@$ordem24){ ?>
@@ -185,7 +185,7 @@ unset($_SESSION["horizontal"]); ?>
 	
 	&nbsp;&nbsp;
 	<?  if ($modulo==""){ ?><a href="?l=<? echo $row_estoque['cidade'];?>&&e=<?php echo $row_estoque['estado']; ?>&&ordem=novo"  > <? echo acento('+ Novo'); ?></a> <? } else{
-	  if(@$ordem23){ ?>
+	  if(@$ordem2utf8
 	<a href="<?php echo $link; ?>&&ordem=seminovo"  > <? echo  acento('- Novo'); ?></a>
 	<? }  
 	elseif(@$ordem24){ ?>

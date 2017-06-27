@@ -27,9 +27,9 @@
    
 
 	
-  <span><a href="<? echo  $linha["marcatexto"];?>" ><? echo  $linha["marcatexto"];?></a>  <?  $linha["modelotexto"]; $modelo1 = explode(" ",$linha["modelotexto"]);    $modelo1[0]; ?>
+  <span><a href="<? echo  $linha["marcatexto"];?>" ><? echo utf8_encode( $linha["marcatexto"]);?></a>  <?  $linha["modelotexto"]; $modelo1 = explode(" ",$linha["modelotexto"]);    $modelo1[0]; ?>
  
- <a href="<? echo  $linha["modelotexto"];?>" ><?php echo  $modelo1[0]; ?></a></span>
+      <a href="<? echo  $linha["modelotexto"];?>" ><?php echo utf8_encode( $modelo1[0]); ?></a></span>
 
 
   
@@ -39,7 +39,7 @@
 <? if ($linha['cidade']){ ?>
  
 <span class=" glyphicon glyphicon-map-marker" aria-hidden="true"> 
-<a href="?l=<? echo trim( $linha["cidade"]);?>&&e=<? echo trim( $linha["estado"]);?>" ><? echo  $linha["cidade"];?></a></span> <? } ?>
+<a href="/?l=<? echo trim( $linha["cidade"]);?>&&e=<? echo trim( $linha["estado"]);?>" ><? echo  $linha["cidade"];?></a></span> <? } ?>
  <span class="glyphicon glyphicon-map-marker" aria-hidden="true">  
  <a href="#" class="navbar-link">  <? echo $distancia= distancia( $linha['lat'], $linha['lon'],$_SESSION['lat'], $_SESSION['log']) ?> 
          

@@ -95,7 +95,7 @@ if (navigator.geolocation) {
  <? 
     if (!isset($_SESSION["telefone"])) { 
    if (!isset($_GET['center'])) { ;?>
-<script type="text/javascript" src="http://j.maxmind.com/app/geoip.js"></script>
+<script type="text/javascript" src="http://j.maxmind.com/app/geoip.js" async></script>
 <script>
 (function(){
 
